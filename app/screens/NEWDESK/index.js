@@ -21,6 +21,14 @@ const ButtonWrapper = styled.View`
   justify-content: center;
 `;
 
+const ButtonSubmitToCard = styled.View`
+  margin-right: 10;
+`;
+
+const ButtonSubmitToHome = styled.View`
+  margin-left: 10;
+`;
+
 
 class NewDeskScreen extends Component {
 
@@ -32,7 +40,22 @@ class NewDeskScreen extends Component {
     questions: [],
   };
 
-  submit = () => {
+  submitToCard = () => {
+    const { id, title, imageUrl, points, questions } = this.state
+    const { addDeck } = this.props
+
+    if (title.length === 0) {
+      alert('Please fill title field')
+      return
+  }
+
+  const deck = {id, title, imageUrl, points, questions}
+    addDeck(deck)
+    this.reset()
+    this.props.navigation.navigate('AddQuestion', {deck})
+  }
+
+  submitToHome = () => {
     const { id, title, imageUrl, points, questions } = this.state
     const { addDeck } = this.props
 
@@ -63,7 +86,14 @@ class NewDeskScreen extends Component {
             value={this.state.title}
           />
         <ButtonWrapper>
-          <Button text="Add Desk" onPress={this.submit}></Button>
+          <View style={{flex: 1, flexDirection: 'row', marginTop: 50}}>
+             <ButtonSubmitToCard>
+                <Button text="Add Card Now" onPress={this.submitToCard}></Button>
+              </ButtonSubmitToCard>
+              <ButtonSubmitToHome>
+                <Button text="Add Card Later" onPress={this.submitToHome}></Button>
+              </ButtonSubmitToHome>
+           </View>
         </ButtonWrapper>
       </AddDeckContainer>
     );

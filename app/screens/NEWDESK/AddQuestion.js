@@ -96,7 +96,7 @@ const AddCardText = styled.Text`
 
 
 
-class CardView extends Component {
+class AddQuestion extends Component {
 
   state = {
     openForms: true,
@@ -151,7 +151,7 @@ class CardView extends Component {
                     </CardText>
                 </Card>
               <ButtonWrapper>
-                    <Button text="Start Quiz" onPress={() => navigation.navigate('QuestionView', {deck: deck})}></Button>
+                    <Button text="Go To Home" onPress={() => navigation.navigate('Home')}></Button>
               </ButtonWrapper>
             </CardContainer>
         :
@@ -178,10 +178,9 @@ class CardView extends Component {
                    value={this.state.answer}
                   />
                 </InputWrapper>
-
-                    <ButtonWrapper>
-                        <Button text="Add Card" onPress={this.submitCard}></Button>
-                    </ButtonWrapper>          
+                <ButtonWrapper>
+                    <Button text="Add Card" onPress={this.submitCard}></Button>
+                </ButtonWrapper>
             </Card>
           </FormCardContainer>
       }
@@ -191,10 +190,18 @@ class CardView extends Component {
 }
 
 
+function mapStateToProps({ decks }, { navigation }) {
+  let { deck } = navigation.state.params
+  let card = decks.find(item => item.id === deck.id)
+  return {
+    card,
+  }
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     addCard: (deckId, card) => dispatch(addCard(deckId, card)),
   }
 }
 
-export default connect(null, mapDispatchToProps)(CardView)
+export default connect(mapStateToProps, mapDispatchToProps)(AddQuestion)

@@ -32,7 +32,9 @@ class CardList extends Component {
                        featured
                        caption= {numberOfCard}
                        onPress={()=> navigation.navigate('CardView', {title: deck.title, deck: deck, points: deck.points})}
+
                   />
+                  
 
               );
             }}

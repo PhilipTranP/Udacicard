@@ -14,6 +14,7 @@ import QuestionView from './screens/HOME/QuestionView';
 import AnswerView from './screens/HOME/AnswerView';
 import ProfileScreen from './screens/Profile';
 import AddDeskScreen from './screens/NEWDESK';
+import AddQuestion from './screens/NEWDESK/AddQuestion';
 import SettingsScreen from './screens/Settings';
 
 import { HamburgerIcon, SettingsIcon, BackIcon } from './components/icons';
@@ -113,6 +114,7 @@ const AppMainStack = StackNavigator({
   CardView: { screen: CardView },
   QuestionView: { screen: QuestionView},
   AnswerView: { screen: AnswerView},
+  AddQuestion: { screen: AddQuestion},
 }, {
   cardStyle: {
     backgroundColor: colors.PRIMARYBLUE,
