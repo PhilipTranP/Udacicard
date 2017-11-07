@@ -135,7 +135,6 @@ class AnswerView extends Component {
       const { navigation } = this.props
       const { deck, currentCard, points } = navigation.state.params
       const totalPoints = deck.questions.length ? deck.questions.length*10 : 1
-      console.log(this.state.questions)
       return (
         <ContainerView>
           <BarContainer>
