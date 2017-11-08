@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components/native';
-import { StyleSheet, Text, View, TextInput } from 'react-native'
+import { StyleSheet, Text, Image, View, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import { addCard } from '../../actions'
 import { Button } from '../../components';
 import { colors } from '../../utils/constants';
+
 
 const ContainerView = styled.View`
   flex: 1;
@@ -25,10 +26,19 @@ const CardContainer = styled.View`
   padding-left: 30;
   padding-right: 30;
 `;
+const CongratCard = styled.View`
+  flex: .8;
+  background-color: chartreuse;
+  border-radius: 10;
+  shadow-radius: 0;
+  shadow-opacity: 0.8;
+  shadow-color: rgba(0, 0, 0, 0.24);
 
+  margin-bottom: 20;
+`;
 const Card = styled.View`
   flex: .8;
-  background-color: papayawhip;
+  background-color: papayawhip ;
   border-radius: 10;
   shadow-radius: 0;
   shadow-opacity: 0.8;
@@ -90,9 +100,15 @@ const AddCardText = styled.Text`
   margin-top: 50;
 `;
 
+const ButtonResetQuiz = styled.View`
+  margin-right: 10;
+`;
 
+const ButtonGoToHome = styled.View`
+  margin-left: 10;
+`;
 
-class CardView extends Component {
+class RestartView extends Component {
 
   state = {
     openForms: true,
@@ -102,9 +118,9 @@ class CardView extends Component {
   }
 
   static navigationOptions = ({ navigation }) => {
-  const { title } = navigation.state.params
+  const { deck } = navigation.state.params
     return {
-      title: title
+      title: deck.title
     }
   }
 
@@ -134,15 +150,16 @@ class CardView extends Component {
     const { navigation } = this.props
     const { deck } = navigation.state.params
     const numberOfCard = deck.questions.length < 2 ? deck.questions.length + " Card" : deck.questions.length + " Cards"
-    const renderStartQuizButton = deck.questions.length < 1 ? null :
-      <ButtonWrapper>
-        <Button text="Start Quiz" onPress={() => navigation.navigate('QuestionView', {deck: deck})}></Button>
-      </ButtonWrapper>
     return (
       <ContainerView>
       {this.state.openForms
         ?
             <CardContainer>
+                <CongratCard>
+                    <CardText>
+                      <TitleText>You{"'"}ve Nailed It! </TitleText>
+                    </CardText>
+                </CongratCard>
                 <Card>
                     <CardText>
                       <TitleText>{deck.title}</TitleText>
@@ -150,7 +167,14 @@ class CardView extends Component {
                         <AddCardText onPress={this.openAddCardForms}>Add Card</AddCardText>
                     </CardText>
                 </Card>
-              { renderStartQuizButton }
+                <View style={{flex: 1, flexDirection: 'row', marginTop: 50}}>
+                   <ButtonResetQuiz>
+                      <Button text="Restart Quiz" onPress={() => navigation.navigate('QuestionView', {deck: deck})}></Button>
+                    </ButtonResetQuiz>
+                    <ButtonGoToHome>
+                      <Button text="Go To Home" onPress={() => navigation.navigate('Home')}></Button>
+                    </ButtonGoToHome>
+                 </View>
             </CardContainer>
         :
 
@@ -195,4 +219,5 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(CardView)
+
+export default connect(null, mapDispatchToProps)(RestartView)

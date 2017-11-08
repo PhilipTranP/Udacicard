@@ -31,10 +31,6 @@ const CardContainer = styled.View`
   shadow-radius: 0;
   shadow-opacity: 0.8;
   shadow-color: rgba(0, 0, 0, 0.24);
-  shadow-offset: {
-    width: 0;
-    height: 2;
-  }
 `;
 
 const CardText = styled.View`
@@ -105,30 +101,41 @@ class AnswerView extends Component {
 
     state = {
      questions: [],
-     currentCard: null,
+     currentCard: 0,
+     correctAnswer: 0,
+     incorrectAnswer: 0,
      points: 0
    }
 
     componentDidMount() {
-      const { deck } = this.props.navigation.state.params
+      const { deck, currentCard } = this.props.navigation.state.params
       this.setState({
           points : this.props.card.points,
-          questions: deck.questions
+          questions: deck.questions,
+          currentCard: currentCard ? currentCard : 0
         })
     }
 
     correctPress = () => {
-      const { deck } = this.props.navigation.state.params
-      this.setState({ currentCard: this.props.currentCard + 1})
-      this.props.changePoint(deck.id, this.state.points + 10)
-      this.props.navigation.navigate('QuestionView', {deck: deck})
+      const { deck, nextQuestion } = this.props.navigation.state.params
+      const pointAdd = this.state.points > (this.state.questions.length -1) * 10 ? 10 : 10
+      this.setState({ currentCard: this.state.currentCard + 1})
+      this.props.changePoint(deck.id, this.state.points + pointAdd)
+      if(this.state.points > (this.state.questions.length -1)* 10 || this.state.points === (this.state.questions.length -1)* 10){
+       this.props.changePoint(deck.id, 0)
+       this.props.navigation.navigate('RestartView', {deck: deck})
+     } else {
+       this.setState({ currentCard: this.state.currentCard + 1})
+       this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: this.state.currentCard})
+     }
     }
 
     inCorrectPress = () => {
-      const { deck, id } = this.props.navigation.state.params
-      this.setState({ currentCard: this.props.currentCard + 1 })
-      this.props.changePoint(deck.id, this.state.points - 5)
-      this.props.navigation.navigate('QuestionView', {deck: deck})
+      const pointSubstract = this.state.points < 1 ? 0 : 5
+      const { deck, id, nextQuestion } = this.props.navigation.state.params
+      this.setState({ currentCard: this.state.currentCard + 1 })
+      this.props.changePoint(deck.id, this.state.points - pointSubstract)
+      this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: this.state.currentCard})
     }
 
     render() {

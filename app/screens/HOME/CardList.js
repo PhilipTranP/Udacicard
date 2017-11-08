@@ -23,7 +23,7 @@ class CardList extends Component {
           <FlatList
             data={this.props.decks}
             renderItem={({ item: deck }) => {
-              const numberOfCard = deck.questions.length === 0 ? "No Card Added Yet" : deck.questions.length +  " Cards" + " - " + deck.points + " Points Earned"
+              const numberOfCard = deck.questions.length === 0 ? "No Card Added Yet" : deck.questions.length +  " Cards" + " - " + deck.points + " Points Earned So Far"
               return (
 
                   <Tile
@@ -34,7 +34,7 @@ class CardList extends Component {
                        onPress={()=> navigation.navigate('CardView', {title: deck.title, deck: deck, points: deck.points})}
 
                   />
-                  
+
 
               );
             }}
