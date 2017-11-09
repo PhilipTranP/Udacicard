@@ -4,6 +4,8 @@ export const initialState = [
     title: 'React',
     imageUrl: "https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/01/1505804164react-universal-blog.jpg",
     points: 0,
+    correctAnswer: 0,
+    incorrectAnswer: 0,
     questions: [
       {
         question: 'What is React?',
@@ -24,6 +26,8 @@ export const initialState = [
     title: 'Redux',
     imageUrl: "http://blog.rangle.io/content/images/2016/05/ngRedux.png",
     points: 0,
+    correctAnswer: 0,
+    incorrectAnswer: 0,
     questions: [
       {
         question: 'What is Redux?',
@@ -44,6 +48,8 @@ export const initialState = [
     title: 'React Native',
     imageUrl: "https://www.mobiloud.com/blog/wp-content/uploads/2016/12/xnative-web-hybrid-mobile-apps-740x493.jpeg.pagespeed.ic.Fs1HUCknL5.jpg",
     points: 0,
+    correctAnswer: 0,
+    incorrectAnswer: 0,
     questions: [
       {
         question: 'What is React Native?',

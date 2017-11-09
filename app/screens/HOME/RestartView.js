@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { addCard } from '../../actions'
 import { Button } from '../../components';
 import { colors } from '../../utils/constants';
+import { changePoint, addCorrectAnswer, addIncorrectAnswer } from '../../actions'
 
 
 const ContainerView = styled.View`
@@ -113,8 +114,19 @@ class RestartView extends Component {
   state = {
     openForms: true,
     points: 0,
+    correctAnswer: 0,
+    incorrectAnswer: 0,
     question: '',
     answer: '',
+  }
+
+  componentDidMount() {
+    const { deck, currentCard, correctAnswer, incorrectAnswer, points } = this.props.navigation.state.params
+    this.setState({
+        points,
+        correctAnswer,
+        incorrectAnswer
+      })
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -146,9 +158,17 @@ class RestartView extends Component {
     navigation.navigate('Home')
   }
 
-  render() {
-    const { navigation } = this.props
+  resetQuiz = () => {
+    const { changePoint, addCorrectAnswer, addIncorrectAnswer, navigation } = this.props
     const { deck } = navigation.state.params
+    changePoint(deck.id, 0)
+    addCorrectAnswer(deck.id, 0)
+    addIncorrectAnswer(deck.id, 0)
+    navigation.navigate('QuestionView', {deck: deck})
+  }
+  render() {
+    const { navigation, card } = this.props
+    const { deck, correctAnswer, incorrectAnswer } = navigation.state.params
     const numberOfCard = deck.questions.length < 2 ? deck.questions.length + " Card" : deck.questions.length + " Cards"
     return (
       <ContainerView>
@@ -157,22 +177,23 @@ class RestartView extends Component {
             <CardContainer>
                 <CongratCard>
                     <CardText>
-                      <TitleText>You{"'"}ve Nailed It! </TitleText>
+                      <QuantityText>Correct Answer: {card.correctAnswer} </QuantityText>
+                      <QuantityText>Incorrect Answer: {card.incorrectAnswer} </QuantityText>
                     </CardText>
                 </CongratCard>
                 <Card>
                     <CardText>
                       <TitleText>{deck.title}</TitleText>
-                        <QuantityText>{numberOfCard} - {this.state.points} points earned </QuantityText>
+                        <QuantityText>{numberOfCard} - {card.points} points earned </QuantityText>
                         <AddCardText onPress={this.openAddCardForms}>Add Card</AddCardText>
                     </CardText>
                 </Card>
                 <View style={{flex: 1, flexDirection: 'row', marginTop: 50}}>
                    <ButtonResetQuiz>
-                      <Button text="Restart Quiz" onPress={() => navigation.navigate('QuestionView', {deck: deck})}></Button>
+                      <Button text="Reset Quiz" onPress={this.resetQuiz}></Button>
                     </ButtonResetQuiz>
                     <ButtonGoToHome>
-                      <Button text="Go To Home" onPress={() => navigation.navigate('Home')}></Button>
+                      <Button text="Go To Deck" onPress={() => navigation.navigate('CardView', {deck: deck})}></Button>
                     </ButtonGoToHome>
                  </View>
             </CardContainer>
@@ -213,11 +234,22 @@ class RestartView extends Component {
 }
 
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addCard: (deckId, card) => dispatch(addCard(deckId, card)),
+  function mapStateToProps({ decks }, { navigation }) {
+    let { deck } = navigation.state.params
+    let card = decks.find(item => item.id === deck.id)
+    return {
+      card
+    }
   }
-}
+
+  function mapDispatchToProps(dispatch) {
+    return {
+      addCard: (deckId, card) => dispatch(addCard(deckId, card)),
+      changePoint: (deckId, points) => dispatch(changePoint(deckId, points)),
+      addCorrectAnswer: (deckId, correctAnswer) => dispatch(addCorrectAnswer(deckId, correctAnswer)),
+      addIncorrectAnswer: (deckId, incorrectAnswer) => dispatch(addIncorrectAnswer(deckId, incorrectAnswer))
+    }
+  }
 
 
-export default connect(null, mapDispatchToProps)(RestartView)
+export default connect(mapStateToProps, mapDispatchToProps)(RestartView)

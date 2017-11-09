@@ -13,5 +13,11 @@ export const DELETE_CARD = 'DELETE_CARD';
 // Change points
 export const CHANGE_POINT = 'CHANGE_POINT';
 
+// add correctAnswer
+export const ADD_CORRECT = 'ADD_CORRECT';
+
+// add incorrectAnswer
+export const ADD_INCORRECT = 'ADD_INCORRECT';
+
 // Load async action
 export const RESTORE_ASYNC_STATE = 'RESTORE_ASYNC_STATE';

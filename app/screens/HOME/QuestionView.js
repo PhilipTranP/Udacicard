@@ -99,11 +99,13 @@ class QuestionView extends Component {
    }
 
     componentDidMount() {
-      const { deck, totalScore, currentCard } = this.props.navigation.state.params
+      const { deck, totalScore, currentCard, correctAnswer, incorrectAnswer } = this.props.navigation.state.params
       this.setState({
           questions : deck.questions,
           totalScore:totalScore,
-          currentCard: currentCard ? currentCard : 0
+          currentCard: currentCard ? currentCard : this.state.currentCard,
+          correctAnswer: correctAnswer ? correctAnswer : this.state.correctAnswer,
+          incorrectAnswer: incorrectAnswer ? incorrectAnswer : this.state.incorrectAnswer
         })
     }
 
@@ -123,12 +125,14 @@ class QuestionView extends Component {
       const { currentCard } = this.state
       return (
         <ContainerView>
+          {/*
           <BarContainer>
             <BarText>
               You're at card {' '} {this.state.currentCard + 1} {' '} of {' '} total {' '}{deck.questions.length}
             </BarText>
             <Progress.Bar progress={this.state.currentCard + 1/deck.questions.length} width={null}/>
           </BarContainer>
+          */}
           <CardContainerWrapper>
             <CardContainer>
                 <FontAwesome name="home" size={30} color={colors.PRIMARYBLUE} onPress={() => navigation.navigate('Home')}/>
@@ -141,6 +145,7 @@ class QuestionView extends Component {
                     />
                   ))}
                 </CardText>
+                {/* This section allow user to navigate to each card quickly
                 <AnwerButtonWrapper>
                   {this.state.currentCard > 0
                     ?
@@ -159,10 +164,11 @@ class QuestionView extends Component {
                   }
 
                 </AnwerButtonWrapper>
+                */}
             </CardContainer>
           </CardContainerWrapper>
           <ButtonWrapper>
-            <Button text="Show Answer" onPress={() => navigation.navigate('AnswerView', {deck: deck, currentCard: this.state.currentCard, nextQuestion: this.nextQuestion})}></Button>
+            <Button text="Show Answer" onPress={() => navigation.navigate('AnswerView', {deck: deck, currentCard: this.state.currentCard, correctAnswer: this.state.correctAnswer, incorrectAnswer: this.state.incorrectAnswer})}></Button>
           </ButtonWrapper>
         </ContainerView>
       )

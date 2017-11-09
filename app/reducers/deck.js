@@ -3,6 +3,8 @@ import {
   ADD_DECK,
   ADD_CARD,
   CHANGE_POINT,
+  ADD_CORRECT,
+  ADD_INCORRECT,
 } from '../actions/types'
 
 
@@ -26,6 +28,12 @@ function decks(state = initialState, action) {
     }
     case CHANGE_POINT: {
       return state.map(deck => (deck.id === action.deckId) ? {...deck, points: action.points} : deck)
+    }
+    case ADD_CORRECT: {
+      return state.map(deck => (deck.id === action.deckId) ? {...deck, correctAnswer: action.correctAnswer} : deck)
+    }
+    case ADD_INCORRECT: {
+      return state.map(deck => (deck.id === action.deckId) ? {...deck, incorrectAnswer: action.incorrectAnswer} : deck)
     }
     default:
      return state

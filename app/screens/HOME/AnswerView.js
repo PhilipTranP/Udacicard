@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
-import { changePoint } from '../../actions'
+import { changePoint, addCorrectAnswer, addIncorrectAnswer } from '../../actions'
 import * as Progress from 'react-native-progress'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import styled from 'styled-components/native'
@@ -109,33 +109,42 @@ class AnswerView extends Component {
 
     componentDidMount() {
       const { deck, currentCard } = this.props.navigation.state.params
+      const {correctAnswer, incorrectAnswer } = this.props.card
       this.setState({
           points : this.props.card.points,
           questions: deck.questions,
-          currentCard: currentCard ? currentCard : 0
+          currentCard: currentCard ? currentCard : 0,
+          correctAnswer: correctAnswer ? correctAnswer : this.state.correctAnswer,
+          incorrectAnswer: incorrectAnswer ? incorrectAnswer: this.state.incorrectAnswer
         })
     }
 
     correctPress = () => {
-      const { deck, nextQuestion } = this.props.navigation.state.params
+      const { deck, nextQuestion, currentCard } = this.props.navigation.state.params
       const pointAdd = this.state.points > (this.state.questions.length -1) * 10 ? 10 : 10
       this.setState({ currentCard: this.state.currentCard + 1})
       this.props.changePoint(deck.id, this.state.points + pointAdd)
-      if(this.state.points > (this.state.questions.length -1)* 10 || this.state.points === (this.state.questions.length -1)* 10){
-       this.props.changePoint(deck.id, 0)
-       this.props.navigation.navigate('RestartView', {deck: deck})
+      this.props.addCorrectAnswer(deck.id, this.state.correctAnswer + 1)
+      if(currentCard + 2 > this.state.questions.length){
+       this.props.navigation.navigate('RestartView', {deck: deck, correctAnswer: this.props.card.correctAnswer, points: this.state.points, incorrectAnswer: this.state.incorrectAnswer})
      } else {
-       this.setState({ currentCard: this.state.currentCard + 1})
-       this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: this.state.currentCard})
+       this.setState({ currentCard: currentCard + 1})
+       this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: currentCard + 1})
      }
     }
 
     inCorrectPress = () => {
       const pointSubstract = this.state.points < 1 ? 0 : 5
-      const { deck, id, nextQuestion } = this.props.navigation.state.params
-      this.setState({ currentCard: this.state.currentCard + 1 })
+      const { deck, id, nextQuestion, currentCard } = this.props.navigation.state.params
+      this.setState({ currentCard: this.state.currentCard + 1, incorrectAnswer: this.state.incorrectAnswer + 1 })
       this.props.changePoint(deck.id, this.state.points - pointSubstract)
-      this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: this.state.currentCard})
+      this.props.addIncorrectAnswer(deck.id, this.state.incorrectAnswer + 1)
+      if(currentCard + 2 > this.state.questions.length){
+       this.props.navigation.navigate('RestartView', {deck: deck, correctAnswer: this.props.card.correctAnswer, points: this.state.points, incorrectAnswer: this.state.incorrectAnswer})
+     } else {
+       this.setState({ currentCard: currentCard + 1})
+       this.props.navigation.navigate('QuestionView', {deck: deck, currentCard: currentCard + 1})
+     }
     }
 
     render() {
@@ -144,12 +153,14 @@ class AnswerView extends Component {
       const totalPoints = deck.questions.length ? deck.questions.length*10 : 1
       return (
         <ContainerView>
+          {/*
           <BarContainer>
             <BarText>
-              Your Score: {this.state.points} / {totalPoints}
+              You're at card {' '} {this.state.currentCard + 1} {' '} of {' '} total {' '}{deck.questions.length}
             </BarText>
-            <Progress.Bar progress={this.state.points/totalPoints} width={null}/>
+            <Progress.Bar progress={this.state.currentCard + 1/deck.questions.length} width={null}/>
           </BarContainer>
+          */}
           <CardContainerWrapper>
             <CardContainer>
                 <FontAwesome name="home" size={30} color={colors.PRIMARYBLUE} onPress={() => navigation.navigate('Home')}/>
@@ -192,6 +203,8 @@ class AnswerView extends Component {
   function mapDispatchToProps(dispatch) {
     return {
       changePoint: (deckId, points) => dispatch(changePoint(deckId, points)),
+      addCorrectAnswer: (deckId, correctAnswer) => dispatch(addCorrectAnswer(deckId, correctAnswer)),
+      addIncorrectAnswer: (deckId, incorrectAnswer) => dispatch(addIncorrectAnswer(deckId, incorrectAnswer))
     }
   }
 
